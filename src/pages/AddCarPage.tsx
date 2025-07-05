@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useCarContext } from '../context/CarContext';
 import { calculateLoan } from '../utils/loanCalculator';
 import { parseAutoRuUrl, isValidCarUrl } from '../utils/autoParser';
-import { ArrowLeft, Link as LinkIcon, Car, DollarSign, Percent, Calendar, Download } from 'lucide-react';
 
 const AddCarPage: React.FC = () => {
   const navigate = useNavigate();
@@ -32,13 +31,15 @@ const AddCarPage: React.FC = () => {
 
     setIsParsingUrl(true);
     try {
-      const parsedData = parseAutoRuUrl(formData.url);
+      const parsedData = await parseAutoRuUrl(formData.url);
       if (parsedData) {
         setFormData(prev => ({
           ...prev,
           name: parsedData.name || prev.name,
           year: parsedData.year || prev.year,
           price: parsedData.price || prev.price,
+          mileage: parsedData.mileage || prev.mileage,
+          imageUrl: parsedData.imageUrl || prev.imageUrl,
         }));
         alert('Данные успешно извлечены из URL!');
       } else {
@@ -93,10 +94,9 @@ const AddCarPage: React.FC = () => {
       <div className="mb-8">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+          className="text-blue-600 hover:text-blue-800 mb-4"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Назад к списку
+          ← Назад к списку
         </button>
         <h1 className="text-3xl font-bold text-gray-900">Добавить автомобиль</h1>
         <p className="text-gray-600 mt-1">
@@ -107,9 +107,8 @@ const AddCarPage: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Основная информация */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-            <Car className="h-5 w-5 mr-2" />
-            Основная информация
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            🚗 Основная информация
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -119,13 +118,12 @@ const AddCarPage: React.FC = () => {
               </label>
               <div className="flex space-x-2">
                 <div className="relative flex-1">
-                  <LinkIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <input
                     type="url"
                     name="url"
                     value={formData.url}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="https://auto.ru/cars/used/sale/..."
                   />
                 </div>
@@ -133,10 +131,9 @@ const AddCarPage: React.FC = () => {
                   type="button"
                   onClick={handleUrlParse}
                   disabled={!formData.url || isParsingUrl}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <Download className="h-4 w-4 mr-2" />
-                  {isParsingUrl ? 'Загрузка...' : 'Загрузить данные'}
+                  {isParsingUrl ? '⏳ Загрузка...' : '📥 Загрузить'}
                 </button>
               </div>
               <p className="text-xs text-gray-500 mt-1">
@@ -154,7 +151,7 @@ const AddCarPage: React.FC = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="BMW X5 2020"
               />
             </div>
@@ -171,7 +168,7 @@ const AddCarPage: React.FC = () => {
                 required
                 min="1950"
                 max={new Date().getFullYear() + 1}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -186,7 +183,7 @@ const AddCarPage: React.FC = () => {
                 onChange={handleInputChange}
                 required
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -199,7 +196,7 @@ const AddCarPage: React.FC = () => {
                 name="imageUrl"
                 value={formData.imageUrl}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="https://example.com/image.jpg"
               />
             </div>
@@ -208,9 +205,8 @@ const AddCarPage: React.FC = () => {
 
         {/* Финансовые условия */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-            <DollarSign className="h-5 w-5 mr-2" />
-            Финансовые условия
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            💰 Финансовые условия
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -225,7 +221,7 @@ const AddCarPage: React.FC = () => {
                 onChange={handleInputChange}
                 required
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -241,7 +237,7 @@ const AddCarPage: React.FC = () => {
                 required
                 min="0"
                 max={formData.price}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -249,62 +245,58 @@ const AddCarPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Процентная ставка (%) *
               </label>
-              <div className="relative">
-                <Percent className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                <input
-                  type="number"
-                  name="interestRate"
-                  value={formData.interestRate}
-                  onChange={handleInputChange}
-                  required
-                  min="0"
-                  max="50"
-                  step="0.1"
-                  className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                />
-              </div>
+              <input
+                type="number"
+                name="interestRate"
+                value={formData.interestRate}
+                onChange={handleInputChange}
+                required
+                min="0"
+                max="50"
+                step="0.1"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="12.5"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Срок кредита (лет) *
               </label>
-              <div className="relative">
-                <Calendar className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                <input
-                  type="number"
-                  name="loanTermYears"
-                  value={formData.loanTermYears}
-                  onChange={handleInputChange}
-                  required
-                  min="1"
-                  max="30"
-                  className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                />
-              </div>
+              <input
+                type="number"
+                name="loanTermYears"
+                value={formData.loanTermYears}
+                onChange={handleInputChange}
+                required
+                min="1"
+                max="30"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="5"
+              />
             </div>
           </div>
 
           {/* Предварительный расчет */}
           {formData.price > 0 && formData.downPayment >= 0 && (
-            <div className="mt-6 p-4 bg-primary-50 rounded-lg">
-              <h3 className="font-medium text-primary-900 mb-2">Предварительный расчет</h3>
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <h3 className="font-medium text-blue-900 mb-2">Предварительный расчет</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <span className="text-primary-700">Сумма кредита:</span>
-                  <div className="font-semibold text-primary-900">
+                  <span className="text-blue-700">Сумма кредита:</span>
+                  <div className="font-semibold text-blue-900">
                     {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(loanAmount)}
                   </div>
                 </div>
                 <div>
-                  <span className="text-primary-700">Ежемесячный платеж:</span>
-                  <div className="font-semibold text-primary-900">
+                  <span className="text-blue-700">Ежемесячный платеж:</span>
+                  <div className="font-semibold text-blue-900">
                     {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(monthlyPayment)}
                   </div>
                 </div>
                 <div>
-                  <span className="text-primary-700">Общая сумма:</span>
-                  <div className="font-semibold text-primary-900">
+                  <span className="text-blue-700">Общая сумма:</span>
+                  <div className="font-semibold text-blue-900">
                     {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(monthlyPayment * formData.loanTermYears * 12)}
                   </div>
                 </div>
@@ -325,7 +317,7 @@ const AddCarPage: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isSubmitting ? 'Сохранение...' : 'Сохранить автомобиль'}
           </button>

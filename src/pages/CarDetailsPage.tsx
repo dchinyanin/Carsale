@@ -2,20 +2,6 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCarContext } from '../context/CarContext';
 import { calculateEarlyPayment, formatCurrency, formatNumber } from '../utils/loanCalculator';
-import { 
-  ArrowLeft, 
-  ExternalLink, 
-  Calendar, 
-  Gauge, 
-  DollarSign, 
-  CreditCard, 
-  Percent, 
-  Calculator,
-  TrendingDown,
-  Clock,
-  Edit,
-  Trash2
-} from 'lucide-react';
 
 const CarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +19,7 @@ const CarDetailsPage: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Автомобиль не найден</h1>
         <button
           onClick={() => navigate('/')}
-          className="text-primary-600 hover:text-primary-800"
+          className="text-blue-600 hover:text-blue-800"
         >
           Вернуться к списку
         </button>
@@ -64,10 +50,9 @@ const CarDetailsPage: React.FC = () => {
       <div className="mb-8">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+          className="text-blue-600 hover:text-blue-800 mb-4"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Назад к списку
+          ← Назад к списку
         </button>
         
         <div className="flex items-center justify-between">
@@ -78,17 +63,9 @@ const CarDetailsPage: React.FC = () => {
           
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => navigate(`/edit-car/${car.id}`)}
-              className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              Редактировать
-            </button>
-            <button
               onClick={handleDelete}
-              className="flex items-center px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+              className="px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
               Удалить
             </button>
           </div>
@@ -113,30 +90,18 @@ const CarDetailsPage: React.FC = () => {
             <div className="p-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div className="text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <Calendar className="h-5 w-5 text-gray-400" />
-                  </div>
                   <div className="text-sm text-gray-600">Год</div>
                   <div className="font-semibold">{car.year}</div>
                 </div>
                 <div className="text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <Gauge className="h-5 w-5 text-gray-400" />
-                  </div>
                   <div className="text-sm text-gray-600">Пробег</div>
                   <div className="font-semibold">{formatNumber(car.mileage)} км</div>
                 </div>
                 <div className="text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <DollarSign className="h-5 w-5 text-gray-400" />
-                  </div>
                   <div className="text-sm text-gray-600">Цена</div>
                   <div className="font-semibold">{formatCurrency(car.price)}</div>
                 </div>
                 <div className="text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <Percent className="h-5 w-5 text-gray-400" />
-                  </div>
                   <div className="text-sm text-gray-600">Ставка</div>
                   <div className="font-semibold">{car.interestRate}%</div>
                 </div>
@@ -148,10 +113,9 @@ const CarDetailsPage: React.FC = () => {
                     href={car.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-primary-600 hover:text-primary-800"
+                    className="text-blue-600 hover:text-blue-800"
                   >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Посмотреть объявление
+                    → Посмотреть объявление
                   </a>
                 </div>
               )}
@@ -160,8 +124,7 @@ const CarDetailsPage: React.FC = () => {
 
           {/* Калькулятор досрочного погашения */}
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-              <Calculator className="h-5 w-5 mr-2" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
               Калькулятор досрочного погашения
             </h2>
             
@@ -176,7 +139,7 @@ const CarDetailsPage: React.FC = () => {
                   onChange={(e) => setEarlyPaymentAmount(Number(e.target.value))}
                   min="0"
                   max={car.loanAmount}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Введите сумму"
                 />
               </div>
@@ -223,56 +186,41 @@ const CarDetailsPage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {earlyPaymentType === 'reduce_term' ? (
                       <>
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 text-green-600 mr-2" />
-                          <div>
-                            <div className="text-sm text-green-700">Новый срок</div>
-                            <div className="font-semibold text-green-900">
-                              {earlyPaymentCalc.newTermMonths} мес
-                            </div>
+                        <div>
+                          <div className="text-sm text-green-700">Новый срок</div>
+                          <div className="font-semibold text-green-900">
+                            {earlyPaymentCalc.newTermMonths} мес
                           </div>
                         </div>
-                        <div className="flex items-center">
-                          <TrendingDown className="h-4 w-4 text-green-600 mr-2" />
-                          <div>
-                            <div className="text-sm text-green-700">Экономия времени</div>
-                            <div className="font-semibold text-green-900">
-                              {earlyPaymentCalc.savedTime} мес
-                            </div>
+                        <div>
+                          <div className="text-sm text-green-700">Экономия времени</div>
+                          <div className="font-semibold text-green-900">
+                            {earlyPaymentCalc.savedTime} мес
                           </div>
                         </div>
                       </>
                     ) : (
                       <>
-                        <div className="flex items-center">
-                          <CreditCard className="h-4 w-4 text-green-600 mr-2" />
-                          <div>
-                            <div className="text-sm text-green-700">Новый платеж</div>
-                            <div className="font-semibold text-green-900">
-                              {formatCurrency(earlyPaymentCalc.newMonthlyPayment || 0)}
-                            </div>
+                        <div>
+                          <div className="text-sm text-green-700">Новый платеж</div>
+                          <div className="font-semibold text-green-900">
+                            {formatCurrency(earlyPaymentCalc.newMonthlyPayment || 0)}
                           </div>
                         </div>
-                        <div className="flex items-center">
-                          <TrendingDown className="h-4 w-4 text-green-600 mr-2" />
-                          <div>
-                            <div className="text-sm text-green-700">Экономия в месяц</div>
-                            <div className="font-semibold text-green-900">
-                              {formatCurrency((car.monthlyPayment || 0) - (earlyPaymentCalc.newMonthlyPayment || 0))}
-                            </div>
+                        <div>
+                          <div className="text-sm text-green-700">Экономия в месяц</div>
+                          <div className="font-semibold text-green-900">
+                            {formatCurrency((car.monthlyPayment || 0) - (earlyPaymentCalc.newMonthlyPayment || 0))}
                           </div>
                         </div>
                       </>
                     )}
                   </div>
                   <div className="mt-3 pt-3 border-t border-green-200">
-                    <div className="flex items-center">
-                      <DollarSign className="h-4 w-4 text-green-600 mr-2" />
-                      <div>
-                        <div className="text-sm text-green-700">Экономия по процентам</div>
-                        <div className="font-semibold text-green-900">
-                          {formatCurrency(earlyPaymentCalc.savedInterest)}
-                        </div>
+                    <div>
+                      <div className="text-sm text-green-700">Экономия по процентам</div>
+                      <div className="font-semibold text-green-900">
+                        {formatCurrency(earlyPaymentCalc.savedInterest)}
                       </div>
                     </div>
                   </div>
@@ -285,8 +233,7 @@ const CarDetailsPage: React.FC = () => {
         {/* Финансовая сводка */}
         <div className="space-y-6">
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <CreditCard className="h-5 w-5 mr-2" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Условия кредита
             </h2>
             
@@ -315,15 +262,14 @@ const CarDetailsPage: React.FC = () => {
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <Calculator className="h-5 w-5 mr-2" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Расчеты
             </h2>
             
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Ежемесячный платеж:</span>
-                <span className="font-semibold text-lg text-primary-600">
+                <span className="font-semibold text-lg text-blue-600">
                   {formatCurrency(car.monthlyPayment || 0)}
                 </span>
               </div>
